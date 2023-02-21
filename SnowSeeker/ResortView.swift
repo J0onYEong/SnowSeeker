@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ResortView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) var typeSize
     let resort: Resort
 
     var body: some View {
@@ -18,8 +20,14 @@ struct ResortView: View {
                     .scaledToFit()
                 
                 HStack {
-                    ResortDetailView(resort: resort)
-                    SkiDetailView(resort: resort)
+                    if horizontalSizeClass == .compact && typeSize > .large{
+                        VStack { ResortDetailView(resort: resort) }
+                        VStack { SkiDetailView(resort: resort) }
+                    }
+                    else {
+                        ResortDetailView(resort: resort)
+                        SkiDetailView(resort: resort)
+                    }
                 }
                 .padding(.vertical)
                 .background(Color.primary.opacity(0.1))

@@ -9,10 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var resorts: [Resort] = Bundle.main.decode(Resort.fileName)
+    @State private var searchString = ""
+    
+    var filterResort: [Resort] {
+        if searchString == "" {
+            return resorts
+        }
+        return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
+    }
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(resorts) { resort in
+                ForEach(filterResort) { resort in
                     NavigationLink {
                         ResortView(resort: resort)
                     } label: {
@@ -39,6 +48,9 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Resorts")
+            .searchable(text: $searchString)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(true)
             
             // Secondary View
             WelcomeView()

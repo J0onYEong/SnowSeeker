@@ -41,6 +41,7 @@ struct ResortDetailView: View {
                     .font(.title3)
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .frame(maxWidth: .infinity)
     }
 }
