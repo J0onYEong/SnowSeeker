@@ -75,6 +75,9 @@ struct ResortView: View {
                 if !isFavorite {
                     favorite.insert(resort)
                 }
+                else {
+                    favorite.remove(resort: resort)
+                }
             } label: {
                 Image(systemName: isFavorite ? "heart.fill" : "heart")
                     .foregroundColor(isFavorite ? .red : .secondary)
