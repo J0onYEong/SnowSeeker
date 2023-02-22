@@ -10,12 +10,18 @@ import SwiftUI
 struct ContentView: View {
     @State private var resorts: [Resort] = Bundle.main.decode(Resort.fileName)
     @State private var searchString = ""
+    @EnvironmentObject var favorite: Favorites
     
     var filterResort: [Resort] {
-        if searchString == "" {
-            return resorts
+        // arrange favorite resort front
+        let arrangedResort = resorts.sorted { lhs, rhs in
+            favorite.contain(lhs)
         }
-        return resorts.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
+        // for searchable
+        if searchString == "" {
+            return arrangedResort
+        }
+        return arrangedResort.filter { $0.name.localizedCaseInsensitiveContains(searchString) }
     }
     
     var body: some View {
@@ -42,6 +48,14 @@ struct ContentView: View {
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
+                            if favorite.contain(resort) {
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "heart.fill")
+                                        .accessibilityLabel("Favorite resort")
+                                        .foregroundColor(.red)
+                                }
+                            }
                         }
                         .frame(height: 60)
                     }
@@ -61,5 +75,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(Favorites())
     }
 }

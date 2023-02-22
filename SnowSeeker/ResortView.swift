@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct ResortView: View {
+    // environment
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.dynamicTypeSize) var typeSize
+    @EnvironmentObject var favorite: Favorites
+    
+    // for facility item
+    @State private var showingAlert = false
+    @State private var selectedItem: Facility?
+    
+    // view parameter
     let resort: Resort
 
     var body: some View {
@@ -38,20 +46,47 @@ struct ResortView: View {
 
                     Text("Facilities")
                         .font(.headline)
-
-                    Text(resort.facilities, format: .list(type: .and))
-                        .padding(.vertical)
+                        .padding(.bottom, 10)
+                    
+                    HStack {
+                        ForEach(resort.facilityObjects) { facility in
+                            Button {
+                                showingAlert = true
+                                selectedItem = facility
+                            } label: {
+                                facility.icon
+                            }
+                        }
+                    }
                 }
                 .padding(.horizontal)
             }
         }
         .navigationTitle("\(resort.name), \(resort.country)")
         .navigationBarTitleDisplayMode(.inline)
+        .alert(selectedItem?.name ?? "Imformation", isPresented: $showingAlert, presenting: selectedItem) { _ in
+            
+        } message: { facility in
+            Text(facility.description)
+        }
+        .toolbar {
+            let isFavorite = favorite.contain(resort)
+            Button {
+                if !isFavorite {
+                    favorite.insert(resort)
+                }
+            } label: {
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    .foregroundColor(isFavorite ? .red : .secondary)
+            }
+        }
+
     }
 }
 
 struct ResortView_Previews: PreviewProvider {
     static var previews: some View {
         ResortView(resort: .example)
+            .environmentObject(Favorites())
     }
 }

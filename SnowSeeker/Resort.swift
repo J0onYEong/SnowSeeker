@@ -25,6 +25,10 @@ struct Resort: Codable, Identifiable {
     static let resorts: [Resort] = Bundle.main.decode(fileName)
     static let example = resorts[0]
     
+    // caculation property
+    var facilityObjects: [Facility] {
+        facilities.map(Facility.init)
+    }
 }
 
 extension Bundle {
